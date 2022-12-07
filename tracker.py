@@ -6,12 +6,6 @@ Created on Fri Oct 21 13:51:33 2022
 @author: laura
 """
 
-# class TrackableObject:
-# 	def __init__(self, objectID, centroid):
-# 		self.objectID = objectID
-# 		self.centroids = [centroid]
-# 		self.counted = False
-
 import math
 
 class Tracked:
@@ -30,10 +24,7 @@ class Tracked:
 
 class Tracker:
     def __init__(self, limit):
-        # Storing the positions of center of the objects
         self.center_points = {}
-        # Count of ID of boundng boxes
-        # each time new object will be captured the id will be increassed by 1
         self.id_count = 1
         self.limit = limit
         self.id_counted = []
@@ -42,17 +33,17 @@ class Tracker:
         
     def update(self, objects_rect):
         objects_bbs_ids = []
-        # Calculating the center of objects
+
         for rect in objects_rect:
             x, y, w, h = rect
             center_x = (x + x + w) // 2
             center_y = (y + y + h) // 2
-            # Find if object is already detected or not
+
             same_object_detected = False
             for id, pt in self.center_points.items():
                 dist = math.hypot(center_x - pt.center_x, center_y - pt.center_y)
                 if dist < 25:
-                    # self.center_points[id] = (center_x, center_y)
+
                     if(pt.center_y > center_y):
                         pt.direc = 1
                     else:
@@ -83,7 +74,7 @@ class Tracker:
                self.center_points[self.id_count] = t                  
                objects_bbs_ids.append([x, y, w, h, self.id_count])       
                self.id_count += 1
-        # Cleaning the dictionary ids that are not used anymore
+
         new_center_points = {}
         for obj_bb_id in objects_bbs_ids:
             var,var,var,var, object_id = obj_bb_id
@@ -96,6 +87,6 @@ class Tracker:
                 pt.counter_frames += 1
             elif id in new_center_points:
                 pt.counter_frames = 0
-       # Updating the dictionary with IDs that is not used
+
         self.center_points = new_center_points.copy()
         return objects_bbs_ids
